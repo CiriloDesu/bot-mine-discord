@@ -21,8 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class MinecraftMonitorBot extends ListenerAdapter {
 
     private static final String TOKEN = Dotenv.load().get("DISCORD_TOKEN"); // Insira o token do seu bot
-    private static final String START_SCRIPT = "/home/ubuntu/mod/start.sh"; // Caminho completo para o script de inicialização
-    private static final String MINECRAFT_SERVER_IP = Dotenv.load().get("IP_SERVER"); // IP do servidor (localhost no VPS)
+    private static final String START_SCRIPT = "tmux new-session -d -s minecraft 'bash /home/ubuntu/mod/start.sh'\n"; // Caminho completo para o script de inicialização
+    private static final String MINECRAFT_SERVER_IP = "127.0.0.1"; // IP do servidor (localhost no VPS)
     private static final int MINECRAFT_SERVER_PORT = 25565; // Porta do servidor de Minecraft
     private static final long CHECK_INTERVAL_MINUTES = 5; // Intervalo de verificação (em minutos)
 
