@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class MinecraftMonitorBot extends ListenerAdapter {
 
     private static final String TOKEN = Dotenv.load().get("DISCORD_TOKEN"); // Insira o token do seu bot
-    private static final String START_SCRIPT = "tmux new-session -d -s minecraft 'bash /home/ubuntu/mod/start.sh'\n"; // Caminho completo para o script de inicialização
+    private static final String START_SCRIPT = "tmux send-keys -t mod './start.sh' C-m"; // Caminho completo para o script de inicialização
     private static final String MINECRAFT_SERVER_IP = "127.0.0.1"; // IP do servidor (localhost no VPS)
     private static final int MINECRAFT_SERVER_PORT = 25565; // Porta do servidor de Minecraft
     private static final long CHECK_INTERVAL_MINUTES = 5; // Intervalo de verificação (em minutos)
@@ -84,13 +84,12 @@ public class MinecraftMonitorBot extends ListenerAdapter {
     // Método para iniciar o servidor de Minecraft
     private static void startMinecraftServer(MessageReceivedEvent event) {
         try {
-            Process process = new ProcessBuilder(START_SCRIPT).start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuilder output = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                output.append(line).append("\n");
-            }
+            // Comando para enviar o script para a sessão tmux existente
+            String command = "tmux send-keys -t mod 'bash " + START_SCRIPT + "' C-m";
+
+            // Executando o comando no terminal
+            Process process = new ProcessBuilder("bash", "-c", command).start();
+            process.waitFor(); // Espera o comando ser executado
 
             if (event != null) {
                 event.getChannel().sendMessage("Servidor de Minecraft iniciado com sucesso! ✅").queue();
@@ -105,4 +104,5 @@ public class MinecraftMonitorBot extends ListenerAdapter {
             }
         }
     }
+
 }
